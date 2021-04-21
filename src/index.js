@@ -3,15 +3,21 @@ import { render } from "react-dom";
 import App from "./App";
 import { ApolloClient, ApolloProvider } from "@apollo/client";
 import { cache } from "./cache";
+import { persistCache } from "apollo-cache-persist";
 
-export const client = new ApolloClient({
+persistCache({
   cache,
-  connectToDevTools: true,
-});
+  storage: window.localStorage,
+}).then(() => {
+  const client = new ApolloClient({
+    cache,
+    connectToDevTools: true,
+  });
 
-render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById("root")
-);
+  render(
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>,
+    document.getElementById("root")
+  );
+});
